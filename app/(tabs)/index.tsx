@@ -1,31 +1,45 @@
-import { StyleSheet } from 'react-native';
+import { ScrollView, StyleSheet } from "react-native";
+import { useQuery } from "react-query";
+import { Text, View } from "../../components/Themed";
 
-import EditScreenInfo from '../../components/EditScreenInfo';
-import { Text, View } from '../../components/Themed';
+const getData = async () => {
+  const response = await fetch("https://jsonplaceholder.typicode.com/todos");
+  return response.json();
+};
 
 export default function TabOneScreen() {
+  const query = useQuery("todos", getData);
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Tab One</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="app/(tabs)/index.tsx" />
-    </View>
+    <ScrollView style={styles.container}>
+      {query?.data?.map((todo: any) => (
+        <View
+          key={todo.id}
+          style={{
+            padding: 10,
+            margin: 10,
+            borderRadius: 5,
+          }}
+        >
+          <Text>{todo.title}</Text>
+        </View>
+      ))}
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    gap: 1,
+    backgroundColor: "#f8f8f8",
   },
   title: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   separator: {
     marginVertical: 30,
     height: 1,
-    width: '80%',
+    width: "80%",
   },
 });
